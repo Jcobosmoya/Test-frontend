@@ -6,7 +6,7 @@ from lib.pages.homepage import HomePage
 
 def before_all(context):
     driver = set_selenium_driver(context)
-    driver.set_page_load_timeout('0.5')
+    driver.set_page_load_timeout(0.5)
     driver.maximize_window()
 
     context.web_driver = driver
@@ -31,7 +31,8 @@ def after_scenario(context, scenario):
 
 
 def after_all(context):
-    context.browser.quit()
+    if hasattr(context, 'browser'):
+        context.browser.quit()
     return print("===== That's all folks =====")
 
 
@@ -63,13 +64,14 @@ def set_local_driver() -> webdriver:
     chrome_options.add_argument("--lang=en-US")
     chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
     chrome_options.add_experimental_option('useAutomationExtension', False)
-    return webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+    driver_path = ChromeDriverManager().install()
+    return webdriver.Chrome(executable_path=driver_path, options=chrome_options)    
 
 
 def set_docker_driver() -> webdriver:
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--no-sandbox")
-    chrome_options.set_capability('--lang', 'en-GB')
+    chrome_options.add_argument("--lang=en-GB")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--headless")
     chrome_options.add_experimental_option('useAutomationExtension', False)

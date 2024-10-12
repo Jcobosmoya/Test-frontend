@@ -27,11 +27,14 @@ class GeneralComponents(object):
         except TimeoutException as e:
             raise e
 
-    def wait_until_element_is_clickable(self, web_element, timeout=Constants.MEDIUM_WAIT):
-        error_message = f'The "{web_element}" element took more than {timeout} seconds longer than the configured time to be clickable in the DOM.'
+    def wait_until_element_is_clickable(context, web_element, timeout=10):
         try:
-            return WebDriverWait(self.web_driver, timeout).until(EC.element_to_be_clickable(web_element), error_message)
-        except TimeoutException as e:
+            return WebDriverWait(context.web_driver, timeout).until(
+                EC.element_to_be_clickable(web_element),
+                "The element is not clickable within the given time"
+            )
+        except Exception as e:
+            print(f"Error waiting for element to be clickable: {e}")
             raise e
 
     def wait_until_element_is_not_present(self, web_element, timeout=Constants.MEDIUM_WAIT):

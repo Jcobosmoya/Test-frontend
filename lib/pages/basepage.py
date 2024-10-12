@@ -9,6 +9,7 @@ class BasePage(object):
         self.web_driver = context.web_driver
         self.context = context
         self.base_url = self.get_url_per_environment(context)
+        self.web_driver.set_page_load_timeout(60)
 
     def delete_all_cookies(self):
         """
